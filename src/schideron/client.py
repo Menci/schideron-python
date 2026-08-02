@@ -700,10 +700,20 @@ class SchideronClient:
 
     async def _on_relay_frame(self, frame: TCP3rdFrame) -> None:
         if len(frame.payload) == HVAC_PAYLOAD_LENGTH and frame.payload[0] == HVAC_OPCODE:
-            if any(key.device_id == frame.device_id for key in self._heatings):
-                await self._on_heating_status_frame(frame)
+            heating = tuple(
+                status for key, status in self._heatings.items() if key.device_id == frame.device_id
+            )
+            conditioners = tuple(
+                status
+                for key, status in self._conditioners.items()
+                if key.device_id == frame.device_id
+            )
+            if len(heating) + len(conditioners) != 1:
+                return
+            if heating:
+                await self._on_heating_status_frame(frame, heating[0])
             else:
-                await self._on_conditioner_status_frame(frame)
+                await self._on_conditioner_status_frame(frame, conditioners[0])
             return
         if len(frame.payload) != RELAY_PAYLOAD_LENGTH or frame.payload[0] != RELAY_OPCODE:
             return
@@ -719,17 +729,11 @@ class SchideronClient:
             )
             self._state_changed.notify_all()
 
-    async def _on_conditioner_status_frame(self, frame: TCP3rdFrame) -> None:
-        current = next(
-            (
-                status
-                for key, status in self._conditioners.items()
-                if key.device_id == frame.device_id
-            ),
-            None,
-        )
-        if current is None:
-            return
+    async def _on_conditioner_status_frame(
+        self,
+        frame: TCP3rdFrame,
+        current: ConditionerStatus,
+    ) -> None:
         try:
             power = ConditionerPower(frame.payload[5])
             mode = ConditionerMode(frame.payload[6])
@@ -761,13 +765,11 @@ class SchideronClient:
             self._state_changed.notify_all()
         self._publish(status)
 
-    async def _on_heating_status_frame(self, frame: TCP3rdFrame) -> None:
-        current = next(
-            (status for key, status in self._heatings.items() if key.device_id == frame.device_id),
-            None,
-        )
-        if current is None:
-            return
+    async def _on_heating_status_frame(
+        self,
+        frame: TCP3rdFrame,
+        current: HeatingStatus,
+    ) -> None:
         try:
             power = HeatingPower(frame.payload[5])
         except ValueError:

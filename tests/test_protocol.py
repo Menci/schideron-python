@@ -166,6 +166,8 @@ def test_parse_update_status_rejects_invalid_shapes(payload) -> None:
     ("field", "value"),
     [
         ("device_id", "invalid"),
+        ("device_id", "0"),
+        ("device_id", "65536"),
     ],
 )
 def test_parse_conditioner_status_rejects_invalid_fields(
@@ -176,6 +178,16 @@ def test_parse_conditioner_status_rejects_invalid_fields(
     conditioner_status_payload[field] = value
     with pytest.raises(ProtocolError):
         parse_status(conditioner_status_payload, received_at=NOW, version=1)
+
+
+@pytest.mark.parametrize("device_id", ["0", "65536"])
+def test_parse_heating_status_rejects_out_of_range_device_id(
+    heating_status_payload,
+    device_id,
+) -> None:
+    heating_status_payload["device_id"] = device_id
+    with pytest.raises(ProtocolError):
+        parse_status(heating_status_payload, received_at=NOW, version=1)
 
 
 @pytest.mark.parametrize(("field", "value"), [("state", 0), ("mode", 0), ("fanspeed", 0)])

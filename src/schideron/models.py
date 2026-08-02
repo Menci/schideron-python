@@ -5,14 +5,13 @@ from datetime import datetime
 from typing import Any, Self
 
 from .constants import (
+    MAX_DEVICE_ID,
     ConditionerFanSpeed,
     ConditionerMode,
     ConditionerPower,
     HeatingPower,
     HeatingStatusSource,
 )
-
-_MAX_DEVICE_ID = (1 << 16) - 1
 
 type JsonScalar = bool | int | float | str | None
 type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
@@ -53,8 +52,8 @@ class Conditioner:
     mode_flag: bool = False
 
     def __post_init__(self) -> None:
-        if not 1 <= self.device_id <= _MAX_DEVICE_ID:
-            raise ValueError(f"device_id must be between 1 and {_MAX_DEVICE_ID}")
+        if not 1 <= self.device_id <= MAX_DEVICE_ID:
+            raise ValueError(f"device_id must be between 1 and {MAX_DEVICE_ID}")
         if self.device_name < 1:
             raise ValueError("device_name must be positive")
         if self.sync_type < 0:
@@ -101,8 +100,8 @@ class Heating:
     max_temperature: int = 35
 
     def __post_init__(self) -> None:
-        if not 1 <= self.device_id <= _MAX_DEVICE_ID:
-            raise ValueError(f"device_id must be between 1 and {_MAX_DEVICE_ID}")
+        if not 1 <= self.device_id <= MAX_DEVICE_ID:
+            raise ValueError(f"device_id must be between 1 and {MAX_DEVICE_ID}")
         if self.device_name < 1:
             raise ValueError("device_name must be positive")
         if self.sync_type < 0:

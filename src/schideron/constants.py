@@ -21,6 +21,7 @@ DEFAULT_PORT = 3001
 DEFAULT_SOCKETIO_PATH = "socket.io"
 DISCOVERY_MESSAGE = b"discover node"
 DISCOVERY_PORT = 33333
+MAX_DEVICE_ID = (1 << 16) - 1
 
 
 class ConditionerPower(IntEnum):

@@ -6,6 +6,7 @@ from datetime import datetime
 from .constants import (
     DEFINITION_CONDITIONER,
     DEFINITION_LIGHT,
+    MAX_DEVICE_ID,
     ConditionerFanSpeed,
     ConditionerMode,
     ConditionerPower,
@@ -58,6 +59,13 @@ def _optional_nonzero_integer(data: Mapping[str, object], field: str) -> int | N
     return value if value else None
 
 
+def _hvac_device_id(data: Mapping[str, object]) -> int:
+    device_id = _integer(data.get("device_id"), "device_id")
+    if not 1 <= device_id <= MAX_DEVICE_ID:
+        raise ProtocolError(f"device_id must be between 1 and {MAX_DEVICE_ID}")
+    return device_id
+
+
 def _is_floor_heating(data: Mapping[str, object]) -> bool:
     product_model = _optional_string(data, "product_model")
     if product_model is None:
@@ -81,7 +89,7 @@ def _conditioner_status(
 
     key = ConditionerKey(
         device_name=_integer(data.get("device_name"), "device_name"),
-        device_id=_integer(data.get("device_id"), "device_id"),
+        device_id=_hvac_device_id(data),
         pb=_integer(data.get("PB"), "PB"),
         serial_port=_optional_string(data, "interface"),
     )
@@ -122,7 +130,7 @@ def _heating_status(
     return HeatingStatus(
         key=HeatingKey(
             device_name=_integer(data.get("device_name"), "device_name"),
-            device_id=_integer(data.get("device_id"), "device_id"),
+            device_id=_hvac_device_id(data),
             pb=_integer(data.get("PB"), "PB"),
             serial_port=_optional_string(data, "interface"),
         ),

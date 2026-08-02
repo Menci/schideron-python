@@ -167,3 +167,22 @@ async def test_client_decodes_tcp3rd_heating_status(heating_status_payload) -> N
     assert status.target_temperature == 24
     assert status.current_temperature == 23.1
     assert status.raw["TCP3rd"] == "520000000002000000f000e700"
+
+
+async def test_client_ignores_ambiguous_tcp3rd_hvac_device_id(
+    conditioner_status_payload,
+    heating_status_payload,
+) -> None:
+    transport = FakeTransport()
+    client = SchideronClient("unused", transport=transport)
+    heating_status_payload["device_id"] = conditioner_status_payload["device_id"]
+    heating_status_payload["PB"] = "101"
+    await client.connect()
+    await transport.publish([conditioner_status_payload, heating_status_payload])
+    conditioner = next(iter(client.conditioners.values()))
+    heating = next(iter(client.heatings.values()))
+
+    await client._on_relay_frame(TCP3rdFrame(1, bytes.fromhex("5200000000010104000f010f01")))
+
+    assert next(iter(client.conditioners.values())) is conditioner
+    assert next(iter(client.heatings.values())) is heating
