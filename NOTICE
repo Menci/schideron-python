@@ -1,0 +1,10 @@
+Schideron is an unofficial project and is not affiliated with or endorsed by
+Schideron.
+
+Protocol names, constants, numeric mappings, message shapes, and command
+construction behavior in this project are ported from the decompiled
+Schideron UControl Android application and Schideron gateway firmware, then
+verified against observed local-network traffic and physical devices. The
+original APK and firmware remain the property of their respective owners and
+are not distributed with this project.
+

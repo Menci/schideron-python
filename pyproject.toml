@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "schideron"
+version = "0.1.0"
+description = "Async Python SDK for Schideron local UControl gateways"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = ["schideron", "ucontrol", "home-assistant", "socket.io"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Framework :: AsyncIO",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Home Automation",
+]
+dependencies = [
+  "aiohttp>=3.12,<4",
+]
+
+[project.urls]
+Documentation = "https://github.com/Menci/schideron-python/blob/main/docs/protocol.md"
+Issues = "https://github.com/Menci/schideron-python/issues"
+Source = "https://github.com/Menci/schideron-python"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17",
+  "pytest>=8.4",
+  "pytest-asyncio>=1.1",
+  "pytest-cov>=6.2",
+  "ruff>=0.12",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/schideron"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["schideron"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "ASYNC",
+  "B",
+  "C4",
+  "DTZ",
+  "E",
+  "F",
+  "I",
+  "LOG",
+  "PERF",
+  "PIE",
+  "PL",
+  "PT",
+  "PTH",
+  "RUF",
+  "SIM",
+  "SLOT",
+  "TRY",
+  "UP",
+]
+ignore = [
+  "ASYNC109",
+  "COM812",
+  "TRY003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/schideron/client.py" = ["PLR0913"]
+"tests/**" = ["PLR2004", "S101"]
