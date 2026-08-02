@@ -3,24 +3,24 @@ class SchideronError(Exception):
 
 
 class ConnectionClosedError(SchideronError):
-    """The gateway connection is not available."""
+    pass
 
 
 class CommandTimeoutError(SchideronError):
-    """No matching status update arrived before the command deadline."""
+    pass
 
 
 class CommandOutcomeUnknownError(SchideronError):
-    """The connection was lost after a command may have been transmitted."""
+    pass
 
 
 class CommandQueueFullError(SchideronError):
-    """The bounded command queue cannot accept another operation."""
+    pass
 
 
 class ProtocolError(SchideronError):
-    """A gateway message violates the known protocol shape."""
+    pass
 
 
 class InvalidCommandError(SchideronError, ValueError):
-    """A command cannot be represented for the target device."""
+    pass

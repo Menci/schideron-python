@@ -14,9 +14,6 @@ DEFINITION_HEATING_TEMP = "heatingTempControl"
 DEFINITION_HEATING_EXTENSION = "heatingExtensionControl"
 DEFINITION_LIGHT = "lightControl"
 
-DEVICE_CONDITIONER = "conditioner"
-DEVICE_LIGHTING = "lighting"
-
 SEND_COMMAND = "sendCommand"
 UPDATE_STATUS = "updateStatus"
 
