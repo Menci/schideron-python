@@ -177,8 +177,10 @@ def test_lighting_commands_copy_java_shape() -> None:
     ("factory", "message"),
     [
         (lambda: Conditioner(device_id=0), "device_id"),
+        (lambda: Conditioner(device_id=65536), "device_id"),
         (lambda: Conditioner(device_id=1, min_temperature=29, max_temperature=28), "min"),
         (lambda: Heating(device_id=0), "device_id"),
+        (lambda: Heating(device_id=65536), "device_id"),
         (lambda: Heating(device_id=17, min_temperature=36, max_temperature=35), "min"),
         (lambda: LightingChannel(device_id=0, channel=0), "device_id"),
         (lambda: LightingChannel(device_id=1, channel=-1), "channel"),

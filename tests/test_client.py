@@ -243,6 +243,26 @@ async def test_reconnect_requires_fresh_state_before_idempotent_success(
     assert (await pending).power is ConditionerPower.ON
 
 
+async def test_reconnect_requires_fresh_lighting_state_before_idempotent_success(
+    client: SchideronClient,
+    transport: FakeTransport,
+) -> None:
+    status = {
+        "definition": "lightControl",
+        "device_id": "5",
+        "channel": "0",
+        "status": "1",
+    }
+    await client.connect()
+    await transport.publish([status])
+    await transport.disconnect()
+    await transport.connect()
+
+    pending = asyncio.create_task(client.lighting_on(LightingChannel(5, 0)))
+    assert (await transport.commands.get())["cmd"] == "on"
+    assert not (await pending).confirmed
+
+
 async def test_temperature_mode_and_fan_commands(
     client: SchideronClient,
     transport: FakeTransport,

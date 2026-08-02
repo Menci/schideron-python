@@ -210,8 +210,6 @@ class SchideronClient:
         return current_time - status.received_at > stale_after
 
     def is_available(self, status: DeviceStatus, *, now: datetime | None = None) -> bool:
-        if isinstance(status, LightingStatus):
-            return self.connected and not self.is_stale(status, now=now)
         return (
             self.connected
             and status.version > self._epoch_started_version
