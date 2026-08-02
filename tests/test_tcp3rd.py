@@ -159,7 +159,7 @@ async def test_client_decodes_tcp3rd_heating_status(heating_status_payload) -> N
     client = SchideronClient("unused", transport=transport)
     await client.connect()
     await transport.publish([heating_status_payload])
-    await client._on_relay_frame(TCP3rdFrame(17, bytes.fromhex("520000000002000000f000e700")))
+    await client._on_relay_frame(TCP3rdFrame(101, bytes.fromhex("520000000002000000f000e700")))
     status = next(iter(client.heatings.values()))
     assert status.power.name == "ON"
     assert status.authoritative

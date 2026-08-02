@@ -49,20 +49,20 @@ def test_parse_conditioner_status(conditioner_status_payload) -> None:
 def test_parse_floor_heating_status(heating_status_payload) -> None:
     status = parse_status(heating_status_payload, received_at=NOW, version=8)
     assert isinstance(status, HeatingStatus)
-    assert status.key.device_id == 17
-    assert status.key.pb == 17
-    assert status.key.serial_port == "USB1"
+    assert status.key.device_id == 101
+    assert status.key.pb == 101
+    assert status.key.serial_port == "MODBUS_A"
     assert status.power is HeatingPower.OFF
     assert status.source is HeatingStatusSource.CACHED_SNAPSHOT
     assert not status.authoritative
     assert status.target_temperature is None
     assert status.current_temperature is None
     assert Heating.from_status(status) == Heating(
-        device_id=17,
-        device_name=1,
+        device_id=101,
+        device_name=7,
         sync_type=2,
-        pb=17,
-        serial_port="USB1",
+        pb=101,
+        serial_port="MODBUS_A",
     )
 
     heating_status_payload["state"] = "2"

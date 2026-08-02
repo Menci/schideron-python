@@ -78,7 +78,7 @@ def conditioner() -> Conditioner:
 
 @pytest.fixture
 def heating() -> Heating:
-    return Heating(device_id=17, device_name=1, pb=17, serial_port="USB1")
+    return Heating(device_id=101, device_name=7, pb=101, serial_port="MODBUS_A")
 
 
 @pytest.fixture
@@ -319,7 +319,7 @@ async def test_heating_commands_wait_for_fresh_confirmation(
     powered["state"] = "2"
     await transport.publish([powered])
     assert not power_pending.done()
-    await client._on_relay_frame(TCP3rdFrame(17, bytes.fromhex("52000000000200000000000000")))
+    await client._on_relay_frame(TCP3rdFrame(101, bytes.fromhex("52000000000200000000000000")))
     assert (await power_pending).power is HeatingPower.ON
 
     temperature_pending = asyncio.create_task(
@@ -333,7 +333,7 @@ async def test_heating_commands_wait_for_fresh_confirmation(
     warmed["room_temperature"] = "231"
     await transport.publish([warmed])
     assert not temperature_pending.done()
-    await client._on_relay_frame(TCP3rdFrame(17, bytes.fromhex("520000000002000000f000e700")))
+    await client._on_relay_frame(TCP3rdFrame(101, bytes.fromhex("520000000002000000f000e700")))
     temperature = await temperature_pending
     assert temperature.target_temperature == 24
     assert temperature.status is not None

@@ -36,8 +36,8 @@ def heating_status_payload() -> dict[str, str]:
         "product_model": "HaiLin-FloorHeating-MODBUS-RTU",
         "brand": "海林自控",
         "category": "HVAC",
-        "device_id": "17",
-        "device_name": "1",
+        "device_id": "101",
+        "device_name": "7",
         "state": "1",
         "mode": "0",
         "fanspeed": "0",
@@ -48,8 +48,8 @@ def heating_status_payload() -> dict[str, str]:
         "set_humidity": "0",
         "room_humidity": "0",
         "PM2.5": "0",
-        "PB": "17",
-        "interface": "USB1",
+        "PB": "101",
+        "interface": "MODBUS_A",
     }
 
 

@@ -37,11 +37,11 @@ def conditioner() -> Conditioner:
 @pytest.fixture
 def heating() -> Heating:
     return Heating(
-        device_id=17,
-        device_name=1,
+        device_id=101,
+        device_name=7,
         sync_type=2,
-        pb=17,
-        serial_port="USB1",
+        pb=101,
+        serial_port="MODBUS_A",
     )
 
 
@@ -120,12 +120,12 @@ def test_conditioner_mode_fan_and_extension(conditioner: Conditioner) -> None:
 
 def test_heating_commands_copy_java_shape(heating: Heating) -> None:
     common = {
-        "device_name": 1,
-        "device_id": 17,
+        "device_name": 7,
+        "device_id": 101,
         "sync_type": 2,
         "action": "acdirectcontrol",
-        "PB": 17,
-        "interface": "USB1",
+        "PB": 101,
+        "interface": "MODBUS_A",
     }
     assert heating_off(heating) == {
         **common,
@@ -181,7 +181,7 @@ def test_lighting_commands_copy_java_shape() -> None:
         (lambda: Conditioner(device_id=1, min_temperature=29, max_temperature=28), "min"),
         (lambda: Heating(device_id=0), "device_id"),
         (lambda: Heating(device_id=65536), "device_id"),
-        (lambda: Heating(device_id=17, min_temperature=36, max_temperature=35), "min"),
+        (lambda: Heating(device_id=101, min_temperature=36, max_temperature=35), "min"),
         (lambda: LightingChannel(device_id=0, channel=0), "device_id"),
         (lambda: LightingChannel(device_id=1, channel=-1), "channel"),
         (lambda: Extension(-1), "extension_id"),
