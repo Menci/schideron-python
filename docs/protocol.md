@@ -244,8 +244,9 @@ HVAC response payloads are 13 bytes and begin with opcode `0x52`:
 | `9..10` | target temperature, `u16le` tenths |
 | `11..12` | room temperature, `u16le` tenths |
 
-The SDK decodes a `0x52` frame as heating when a typed heating record with the
-same device ID exists; otherwise it uses conditioner semantics.
+The SDK decodes a `0x52` frame only when exactly one typed conditioner or
+heating record has the same device ID. Unknown or ambiguous IDs are ignored so
+a partial TCP3rd identity cannot update or confirm the wrong device.
 
 ### Raw relay bank
 
