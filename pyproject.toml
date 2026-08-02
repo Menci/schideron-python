@@ -25,6 +25,11 @@ dependencies = [
   "aiohttp>=3.12,<4",
 ]
 
+[project.urls]
+Documentation = "https://github.com/Menci/schideron-python/blob/main/docs/protocol.md"
+Issues = "https://github.com/Menci/schideron-python/issues"
+Source = "https://github.com/Menci/schideron-python"
+
 [dependency-groups]
 dev = [
   "mypy>=1.17",
