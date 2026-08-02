@@ -1,5 +1,5 @@
 class SchideronError(Exception):
-    """Base exception for the SDK."""
+    pass
 
 
 class ConnectionClosedError(SchideronError):

@@ -21,10 +21,10 @@ gateway.
 
 ## Conditioner verification
 
-Live round-trips cover power, whole-degree target temperature, cool/fan modes,
-and low/automatic fan speed on device 1. Each test restored the complete
-initial state. Heat and dehumidification depend on the downstream equipment's
-capabilities.
+Live round-trips on a configured conditioner cover power, whole-degree target
+temperature, cool/fan modes, and low/automatic fan speed. Each test restored
+the complete initial state. Heat and dehumidification depend on the downstream
+equipment's capabilities.
 
 The gateway publishes physical conditioner status on an observed roughly
 10.6-second cycle. TCP3rd targeted reads and `0x52` decoding are verified, with
