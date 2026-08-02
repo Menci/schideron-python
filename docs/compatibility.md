@@ -40,14 +40,15 @@ read remains in the gateway's unbounded physical-interface FIFO.
 
 ## Floor-heating verification
 
-The cached snapshot contains one typed floor-heating device:
+The identifiers below are synthetic while preserving the observed field
+relationships. The cached snapshot contains one typed floor-heating device:
 
 | Property | Value |
 | --- | --- |
-| Device ID | 17 |
-| Device name / Modbus address | 1 |
-| PB | 17 |
-| Interface | USB1 |
+| Device ID | 101 |
+| Device name / Modbus address | 7 |
+| PB | 101 |
+| Interface | `MODBUS_A` |
 | Product model | `HaiLin-FloorHeating-MODBUS-RTU` |
 | Brand | 海林自控 |
 | Cached power | off (`1`), not authoritative |
@@ -55,27 +56,26 @@ The cached snapshot contains one typed floor-heating device:
 
 APK and firmware analysis verify the gateway command schema, integer target
 temperature, state `1/2`, tenths-degree status, and a 5–35°C default range. The
-physical execution of device 17 power and temperature writes has not been
-verified. No live device 17 status appeared in passive 3001/TCP3rd captures or
+physical execution of floor-heating power and temperature writes has not been
+verified. No live heating status appeared in passive 3001/TCP3rd captures or
 targeted TCP3rd reads, so the default SDK result is explicitly unconfirmed and
 strict confirmation accepts only a matching TCP3rd frame.
 
-Four `CHVAC-THC-01` records at logical IDs 20–23 are Com2 panel nodes. Node 20
-shares PB 17, but its cached state changed between `2` and `1` with zero
-temperatures. Nodes 21–23 reported state `0` while PB-linked conditioners 1–3
-were on. These panel rows are not valid telemetry proxies for their PB-linked
-devices, and Com2 node 20 does not proxy USB1 device 17.
+Associated `CHVAC-THC-01` panel records on a separate interface reported state
+values that did not match their PB-linked HVAC devices. These panel rows are
+not valid telemetry proxies for the linked devices, and an equal PB does not
+make a panel record a wire-level alias.
 
 ## Relay verification
 
-Ten configured channels across relay device IDs 5 and 6 were physically
-verified for command execution. Port 3001 command transmission is reliable and
-fast on the tested LAN.
+Multiple configured relay channels were physically verified for command
+execution. Port 3001 command transmission is reliable and fast on the tested
+LAN.
 
-TCP3rd emits opcode `0x92` banks for IDs 5 and 6, but controlled OFF/ON tests
-left their masks unchanged. Those frames are retained only as raw diagnostic
-data. Current relay state, channel count, names, and rooms must not be inferred
-from them.
+TCP3rd emits opcode `0x92` banks for the relay controllers, but controlled
+OFF/ON tests left their masks unchanged. Those frames are retained only as raw
+diagnostic data. Current relay state, channel count, names, and rooms must not
+be inferred from them.
 
 Official relay documentation and the APK both support live channel feedback, so
 the stale bank is installation integration or configuration behavior. The exact

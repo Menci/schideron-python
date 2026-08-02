@@ -90,20 +90,21 @@ high `1`, medium `2`, low `3`, and automatic `4`. Conditioner state uses off
 
 ## Floor-heating protocol
 
-The verified device reports this shape:
+The verified device reports the following sanitized shape. IDs and interface
+names are synthetic while preserving field relationships:
 
 ```json
 {
   "definition": "airconControl",
   "product_model": "HaiLin-FloorHeating-MODBUS-RTU",
   "brand": "海林自控",
-  "device_id": "17",
-  "device_name": "1",
+  "device_id": "101",
+  "device_name": "7",
   "state": "1",
   "set_temperature": "0",
   "room_temperature": "0",
-  "PB": "17",
-  "interface": "USB1"
+  "PB": "101",
+  "interface": "MODBUS_A"
 }
 ```
 
@@ -125,15 +126,15 @@ Power command:
 
 ```json
 {
-  "device_name": 1,
-  "device_id": 17,
+  "device_name": 7,
+  "device_id": 101,
   "sync_type": 2,
   "cmd": 2,
   "ac_action": "onoff",
   "action": "acdirectcontrol",
   "definition": "heatingPowerControl",
-  "PB": 17,
-  "interface": "USB1"
+  "PB": 101,
+  "interface": "MODBUS_A"
 }
 ```
 
@@ -142,22 +143,21 @@ definition `heatingTempControl`. Extensions use `extensionCommand` and
 `heatingExtensionControl`.
 
 Firmware routes the logical `device_id` as `ctlrid` and `device_name` as the
-port/Modbus address. Device 17 is therefore the APK command target. This proves
-the gateway routing path but does not prove that the installed downstream
-controller accepts or executes a command.
+port/Modbus address. The typed heating record is therefore the APK command
+target. This proves the gateway routing path but does not prove that the
+installed downstream controller accepts or executes a command.
 
-Logical ID 20 is a `CHVAC-THC-01` panel node on Com2 with PB 17. Its cached
-`state` changed between `2` and `1` while all temperature fields remained zero.
-IDs 21–23 reported state `0` even while their PB-linked conditioners 1–3 were
-on. These values cannot be treated as the physical state of the PB-linked
-device, and the different interface means ID 20 is not a wire-level alias for
-USB1 device 17.
+Associated `CHVAC-THC-01` panel records on a separate interface reported state
+values that did not match their PB-linked HVAC devices. These values cannot be
+treated as physical device state, and an equal PB does not make a panel record
+a wire-level alias.
 
-Device 17 currently appears only in saved snapshots as off with zero
+The heating device currently appears only in saved snapshots as off with zero
 temperatures. Passive 3001 and 7776 captures and targeted TCP3rd reads produced
-no device 17 or 20 response. The SDK marks snapshot-derived heating status as
-`cached_snapshot`; it is useful for discovery and routing only. A TCP3rd `0x52`
-frame for device 17 is the only currently modelled authoritative heating source.
+no heating or associated-panel response. The SDK marks snapshot-derived
+heating status as `cached_snapshot`; it is useful for discovery and routing
+only. A TCP3rd `0x52` frame for the heating device is the only currently
+modelled authoritative heating source.
 Heating writes return unconfirmed receipts by default, and cached snapshots
 cannot satisfy strict confirmation or clear an optimistic UI value.
 
@@ -167,8 +167,8 @@ Relay command example:
 
 ```json
 {
-  "device_id": 5,
-  "channel": 0,
+  "device_id": 301,
+  "channel": 2,
   "cmd": "on",
   "sync_type": 2,
   "action": "directcontrol",
@@ -229,7 +229,8 @@ wire  = frame_length:u32le | frame
 Firmware translates it to `ctlrid=N&logic=get_status`. It shares the downstream
 interface FIFO, so it is not an immediate status acknowledgement. One live
 conditioner response took about 4.5 seconds; other captures landed on the
-ordinary periodic cadence. Devices 17 and 20 did not respond.
+ordinary periodic cadence. The heating device and associated panel did not
+respond.
 
 HVAC response payloads are 13 bytes and begin with opcode `0x52`:
 
@@ -254,9 +255,9 @@ Observed relay-like payloads are:
 92 | mask:u8 | reserved:u8
 ```
 
-The verified installation emits device IDs 5 and 6 periodically. Controlled
-relay OFF/ON operations did not alter the reported mask, so these frames expose
-a stale controller cache. The SDK preserves the bytes and generation as
+The verified installation emits relay-controller frames periodically.
+Controlled OFF/ON operations did not alter the reported mask, so these frames
+expose a stale controller cache. The SDK preserves the bytes and generation as
 `RelayBankStatus`; it does not create `LightingStatus` or confirm commands.
 
 Stale cache is not an S-Net hardware limitation. Official relay documentation
